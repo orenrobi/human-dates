@@ -2,7 +2,8 @@
   "name": "human-date",
   "version": "1.0.0",
   "description": "A calendar that uses months, weeks, and weekdays (no day numbers).",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "dist": "dist/index.d.ts",
   "scripts": {
     "test": "mocha --reporter spec",
     "build": "tsc"

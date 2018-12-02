@@ -84,8 +84,8 @@ class HumanDate {
     }
     // Find the ordinal date (nth day of year) for a given Gregorian year.
     private getGregorianDayOfYear(date: Date): number {
-        let onejan = new Date(date.getFullYear(), 0, 1);
-        return Math.ceil((date.getTime() - onejan.getTime()) / HumanDate.DAY_MILLISECONDS);
+        let gregorianNewYearDay = new Date(date.getFullYear(), 0, 1);
+        return Math.ceil((date.getTime() - gregorianNewYearDay.getTime()) / HumanDate.DAY_MILLISECONDS);
     };
     // Find the number of days that elapsed between the epoch and the given Gregorian year.
     private getPriorElapsedDays(gregYear: number): number {
@@ -238,73 +238,59 @@ class HumanDate {
 
   private getWeekdayName(n: number): string {
     let weekdayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    if (n <= 7 && n >= 1) {
-      return weekdayNames[n - 1];
-    }
-    return 'Undefined';
+    return this.getNth(n, weekdayNames);
   };
   private getWeekdayAbbr(n: number): string {
     return this.getWeekdayName(n).substring(0, 3);
   }
   private getMonthName(n: number): string {
     let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    if (n <= 12 && n >= 1) {
-      return monthNames[n - 1];
-    }
-    return 'Undefined';
+    return this.getNth(n, monthNames, 'Undefined');
   };
   private getMonthAbbr(n: number): string {
     return this.getMonthName(n).substring(0, 3);
   } 
   private getOrdinalSuffix(n: number): string {
     if (n > 3 && n < 21) return 'th';
-    switch (n % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
+    return this.getNth(n % 10, ['st', 'nd', 'rd'], 'th');
   };
   private getOrdinalWord(n: number): string {
-    switch (n) {
-      case 1:
-        return 'First';
-      case 2:
-        return 'Second';
-      case 3:
-        return 'Third';
-      case 4:
-        return 'Fourth';
-      case 5:
-        return 'Fifth';
-      default:
-        return '';
-    }
+      return this.getNth(n, ['First', 'Second', 'Third', 'Fourth', 'Fifth']);
   };
+  private getNth(n: number, list: string[], defaultValue = 'Undefined'): string {
+      return (n > 0 && n < list.length + 1) ? list[n - 1] : defaultValue;
+  }
+  public verify(daysSinceEpoch: number): boolean {
+      // 1. Calculate Human Date from Days Since Epoch
+      // 2. Calculate Gregorian Date from Days Since Epoch
+      // 3. Calculate Days Since Epoch from Human Date
+      // 4. Verify Days Since Epoch equals original value
+      // 5. Calculate Days Since Epoch from Gregorian Date
+      // 6. Verify Days Since Epoch equals original value
+      // 7. Calculate Human Date from Gregorian Date
+      // 8. Verify Human Date equals first value
+      // 9. Calculate Gregorian Date from Human Date
+      // 10. Verify Gregorian Date equals first value
+      return true;
+  }
 }
-/*
-function humanDateFromDate(date: Date): HumanDate {
+
+export function from(w: any, x?: number, y?: number, z?: number): HumanDate {
     let d = new HumanDate();
-    d.fromDate(date);
+    if (w instanceof Date) {
+        d.fromDate(w);
+    }
+    else if (typeof w === "number" && typeof x === "number" && typeof y === "number" && typeof z === "number") {
+        d.fromHumanDate(w, x, y, z);
+    }
+    else if (typeof w === "number" && typeof x === "number") {
+        d.fromHumanDay(w, x);
+    }
+    else if (typeof w === "number") {
+        d.verify(w);
+    }
+    else {
+        throw new TypeError("Unable to calculate human date from given parameters");
+    }
     return d;
-}
-function humanDateFromHumanDate(y: number,m: number,w: number,day: number): HumanDate {
-    let d = new HumanDate();
-    d.fromHumanDate(y,m,w,day);
-    return d;
-}
-*/
-let d = new HumanDate();
-d.fromDate(new Date(2004,11,27));
-console.log(d.standard);
-console.log('2004/Dec/5/Mon');
-console.log('===');
-d.fromHumanDate(2004,12,5,1);
-if (typeof d.iso === "string") { 
-    console.log(d.iso.substring(0,10));
-    console.log('2004-12-27');
 }

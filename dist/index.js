@@ -40,8 +40,8 @@ var HumanDate = /** @class */ (function () {
     };
     // Find the ordinal date (nth day of year) for a given Gregorian year.
     HumanDate.prototype.getGregorianDayOfYear = function (date) {
-        var onejan = new Date(date.getFullYear(), 0, 1);
-        return Math.ceil((date.getTime() - onejan.getTime()) / HumanDate.DAY_MILLISECONDS);
+        var gregorianNewYearDay = new Date(date.getFullYear(), 0, 1);
+        return Math.ceil((date.getTime() - gregorianNewYearDay.getTime()) / HumanDate.DAY_MILLISECONDS);
     };
     ;
     // Find the number of days that elapsed between the epoch and the given Gregorian year.
@@ -109,7 +109,7 @@ var HumanDate = /** @class */ (function () {
      *
      * Numeric  1999/12/5/7
      * Short    Dec/5/Sun
-     * Standard 1999/Dec/5/Sun
+     * Standard 1999 Dec 5 Sun
      * Medium   5th Sunday, Dec 1999
      * Full     Fifth Sunday of December 1999
      */
@@ -204,10 +204,7 @@ var HumanDate = /** @class */ (function () {
     };
     HumanDate.prototype.getWeekdayName = function (n) {
         var weekdayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        if (n <= 7 && n >= 1) {
-            return weekdayNames[n - 1];
-        }
-        return 'Undefined';
+        return this.getNth(n, weekdayNames);
     };
     ;
     HumanDate.prototype.getWeekdayAbbr = function (n) {
@@ -215,10 +212,7 @@ var HumanDate = /** @class */ (function () {
     };
     HumanDate.prototype.getMonthName = function (n) {
         var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        if (n <= 12 && n >= 1) {
-            return monthNames[n - 1];
-        }
-        return 'Undefined';
+        return this.getNth(n, monthNames, 'Undefined');
     };
     ;
     HumanDate.prototype.getMonthAbbr = function (n) {
@@ -227,35 +221,30 @@ var HumanDate = /** @class */ (function () {
     HumanDate.prototype.getOrdinalSuffix = function (n) {
         if (n > 3 && n < 21)
             return 'th';
-        switch (n % 10) {
-            case 1:
-                return 'st';
-            case 2:
-                return 'nd';
-            case 3:
-                return 'rd';
-            default:
-                return 'th';
-        }
+        return this.getNth(n % 10, ['st', 'nd', 'rd'], 'th');
     };
     ;
     HumanDate.prototype.getOrdinalWord = function (n) {
-        switch (n) {
-            case 1:
-                return 'First';
-            case 2:
-                return 'Second';
-            case 3:
-                return 'Third';
-            case 4:
-                return 'Fourth';
-            case 5:
-                return 'Fifth';
-            default:
-                return '';
-        }
+        return this.getNth(n, ['First', 'Second', 'Third', 'Fourth', 'Fifth']);
     };
     ;
+    HumanDate.prototype.getNth = function (n, list, defaultValue) {
+        if (defaultValue === void 0) { defaultValue = 'Undefined'; }
+        return (n > 0 && n < list.length + 1) ? list[n - 1] : defaultValue;
+    };
+    HumanDate.prototype.verify = function (daysSinceEpoch) {
+        // 1. Calculate Human Date from Days Since Epoch
+        // 2. Calculate Gregorian Date from Days Since Epoch
+        // 3. Calculate Days Since Epoch from Human Date
+        // 4. Verify Days Since Epoch equals original value
+        // 5. Calculate Days Since Epoch from Gregorian Date
+        // 6. Verify Days Since Epoch equals original value
+        // 7. Calculate Human Date from Gregorian Date
+        // 8. Verify Human Date equals first value
+        // 9. Calculate Gregorian Date from Human Date
+        // 10. Verify Gregorian Date equals first value
+        return true;
+    };
     // Derivation: 1000 * 60 * 60 * 24
     HumanDate.DAY_MILLISECONDS = 86400000;
     // Length of a leap cycle in the standard Symmetry454 calendar system.
@@ -268,25 +257,23 @@ var HumanDate = /** @class */ (function () {
     HumanDate.MEAN_YEAR = 365.24232081911265;
     return HumanDate;
 }());
-/*
-function humanDateFromDate(date: Date): HumanDate {
-    let d = new HumanDate();
-    d.fromDate(date);
+function from(w, x, y, z) {
+    var d = new HumanDate();
+    if (w instanceof Date) {
+        d.fromDate(w);
+    }
+    else if (typeof w === "number" && typeof x === "number" && typeof y === "number" && typeof z === "number") {
+        d.fromHumanDate(w, x, y, z);
+    }
+    else if (typeof w === "number" && typeof x === "number") {
+        d.fromHumanDay(w, x);
+    }
+    else if (typeof w === "number") {
+        d.verify(w);
+    }
+    else {
+        throw new TypeError("Unable to calculate human date from given parameters");
+    }
     return d;
 }
-function humanDateFromHumanDate(y: number,m: number,w: number,day: number): HumanDate {
-    let d = new HumanDate();
-    d.fromHumanDate(y,m,w,day);
-    return d;
-}
-*/
-var d = new HumanDate();
-d.fromDate(new Date(2004, 11, 27));
-console.log(d.standard);
-console.log('2004/Dec/5/Mon');
-console.log('===');
-d.fromHumanDate(2004, 12, 5, 1);
-if (typeof d.iso === "string") {
-    console.log(d.iso.substring(0, 10));
-    console.log('2004-12-27');
-}
+exports.from = from;
