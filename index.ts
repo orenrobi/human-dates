@@ -13,39 +13,39 @@ class HumanDate {
     // Derivation: ((CYCLE_YEARS * 52) + CYCLE_LEAPS))  * 7) / CYCLE_YEARS
     private static readonly MEAN_YEAR = 365.24232081911265;
 
-    public date: Date|undefined;
-    public year: number|undefined;
-    public dayOfYear: number|undefined;
-    public iso: string|undefined;
-    public daysSinceEpoch: number|undefined;
-    public yearWeek: number|undefined;
-    public quarter: number|undefined;
-    public dayOfQuarter: number|undefined;
-    public weekOfQuarter: number|undefined;
-    public monthOfQuarter: number|undefined;
-    public inLeapYear: boolean|undefined;
-    public inLeapMonth: boolean|undefined;
-    public daysInMonth: number|undefined;
-    public monthOfYear: number|undefined;
-    public monthShort: string|undefined;
-    public monthLong: string|undefined;
-    public dayOfMonth: number|undefined;
-    public dayOfMonthSuffix: string|undefined;
-    public weekOfMonth: number|undefined;
-    public weekOfMonthSuffix: string|undefined;
-    public weekOfMonthWord: string|undefined;
-    public dayOfWeek: number|undefined;
-    public dayOfWeekShort: string|undefined;
-    public dayOfWeekLong: string|undefined;
-    public daysInYear: number|undefined;
-    public micro: string|undefined;
-    public short: string|undefined;
-    public standard: string|undefined;
-    public medium: string|undefined;
-    public long: string|undefined;
-    public gregorianYear: number|undefined;
-    public gregorianDayOfYear: number|undefined;
-    public newYearDay: number|undefined;
+    public date: Date | undefined;
+    public year: number | undefined;
+    public dayOfYear: number | undefined;
+    public iso: string | undefined;
+    public daysSinceEpoch: number | undefined;
+    public yearWeek: number | undefined;
+    public quarter: number | undefined;
+    public dayOfQuarter: number | undefined;
+    public weekOfQuarter: number | undefined;
+    public monthOfQuarter: number | undefined;
+    public inLeapYear: boolean | undefined;
+    public inLeapMonth: boolean | undefined;
+    public daysInMonth: number | undefined;
+    public monthOfYear: number | undefined;
+    public monthShort: string | undefined;
+    public monthLong: string | undefined;
+    public dayOfMonth: number | undefined;
+    public dayOfMonthSuffix: string | undefined;
+    public weekOfMonth: number | undefined;
+    public weekOfMonthSuffix: string | undefined;
+    public weekOfMonthWord: string | undefined;
+    public dayOfWeek: number | undefined;
+    public dayOfWeekShort: string | undefined;
+    public dayOfWeekLong: string | undefined;
+    public daysInYear: number | undefined;
+    public micro: string | undefined;
+    public short: string | undefined;
+    public standard: string | undefined;
+    public medium: string | undefined;
+    public long: string | undefined;
+    public gregorianYear: number | undefined;
+    public gregorianDayOfYear: number | undefined;
+    public newYearDay: number | undefined;
 
     public fromDate(date: Date) {
         this.date = date;
@@ -75,7 +75,7 @@ class HumanDate {
         this.dayOfWeek = this.mod(this.dayOfYear - 1, 7) + 1;
         this.dayOfWeekShort = this.getWeekdayAbbr(this.dayOfWeek);
         this.dayOfWeekLong = this.getWeekdayName(this.dayOfWeek);
-        this.daysInYear =  7 * ((this.inLeapYear) ? 53 : 52);
+        this.daysInYear = 7 * ((this.inLeapYear) ? 53 : 52);
         this.micro = this.format('micro');
         this.short = this.format('short');
         this.standard = this.format('standard');
@@ -175,19 +175,11 @@ class HumanDate {
         }
         return formatted;
     };
-
-    // 
-    private gregYearLength(gregYear: number): number {
-        var length = 365;
-        if (this.mod(gregYear, 4) == 0 && this.mod(gregYear, 100) != 0) {
-            length++;
-        }
-        else if (this.mod(gregYear, 400) == 0) {
-            length++;
-        }
-        return length;
+    // Find the length of a given Gregorian year in days.
+    private gregYearLength(y: number): number {
+        return (((y % 4) == 0 && (y % 100) != 0) || (y % 400) == 0) ? 366 : 365;
     };
-    //
+    // Adjust the gregorian Year and DayOfYear values toward a resolved ordinal date.
     private shiftGreg(isNegativeYear: boolean) {
         if (typeof this.gregorianYear !== "number" || typeof this.gregorianDayOfYear !== "number") {
             return;
@@ -199,7 +191,7 @@ class HumanDate {
         this.gregorianDayOfYear = this.gregorianDayOfYear - this.gregYearLength(this.gregorianYear);
         this.gregorianYear = this.gregorianYear + 1;
     };
-    //
+    // Returns whether the gregorian Year and DayOfYear are a resolved ordinal date.
     private isResolvedGreg(isNegativeYear: boolean) {
         if (typeof this.gregorianDayOfYear !== "number" || typeof this.gregorianYear !== "number") {
             return true;
@@ -209,7 +201,7 @@ class HumanDate {
         }
         return this.gregorianDayOfYear < this.gregYearLength(this.gregorianYear);
     };
-    //
+    // Calculates a Human Date based on a Human Year and DayOfYear.
     public fromHumanDay(year: number, dayOfYear: number) {
         var newYearDay = this.getHumanNewYearDay(year);
         var daysSinceEpoch = newYearDay + dayOfYear - 1;
@@ -223,6 +215,7 @@ class HumanDate {
         date.setDate(this.gregorianDayOfYear)
         this.fromDate(date);
     };
+    // Calculates a Human Date.
     public fromHumanDate(year: number, month: number, week: number, day: number) {
         let daysInPriorMonths = 0;
         for (var i = 1; i < month; i++) {
@@ -236,43 +229,44 @@ class HumanDate {
         this.fromHumanDay(year, daysInPriorMonths + daysInPriorWeeks + day);
     }
 
-  private getWeekdayName(n: number): string {
-    let weekdayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    return this.getNth(n, weekdayNames);
-  };
-  private getWeekdayAbbr(n: number): string {
-    return this.getWeekdayName(n).substring(0, 3);
-  }
-  private getMonthName(n: number): string {
-    let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    return this.getNth(n, monthNames, 'Undefined');
-  };
-  private getMonthAbbr(n: number): string {
-    return this.getMonthName(n).substring(0, 3);
-  } 
-  private getOrdinalSuffix(n: number): string {
-    if (n > 3 && n < 21) return 'th';
-    return this.getNth(n % 10, ['st', 'nd', 'rd'], 'th');
-  };
-  private getOrdinalWord(n: number): string {
-      return this.getNth(n, ['First', 'Second', 'Third', 'Fourth', 'Fifth']);
-  };
-  private getNth(n: number, list: string[], defaultValue = 'Undefined'): string {
-      return (n > 0 && n < list.length + 1) ? list[n - 1] : defaultValue;
-  }
-  public verify(daysSinceEpoch: number): boolean {
-      // 1. Calculate Human Date from Days Since Epoch
-      // 2. Calculate Gregorian Date from Days Since Epoch
-      // 3. Calculate Days Since Epoch from Human Date
-      // 4. Verify Days Since Epoch equals original value
-      // 5. Calculate Days Since Epoch from Gregorian Date
-      // 6. Verify Days Since Epoch equals original value
-      // 7. Calculate Human Date from Gregorian Date
-      // 8. Verify Human Date equals first value
-      // 9. Calculate Gregorian Date from Human Date
-      // 10. Verify Gregorian Date equals first value
-      return true;
-  }
+    public verify(daysSinceEpoch: number): boolean {
+        // 1. Calculate Human Date from Days Since Epoch
+        // 2. Calculate Gregorian Date from Days Since Epoch
+        // 3. Calculate Days Since Epoch from Human Date
+        // 4. Verify Days Since Epoch equals original value
+        // 5. Calculate Days Since Epoch from Gregorian Date
+        // 6. Verify Days Since Epoch equals original value
+        // 7. Calculate Human Date from Gregorian Date
+        // 8. Verify Human Date equals first value
+        // 9. Calculate Gregorian Date from Human Date
+        // 10. Verify Gregorian Date equals first value
+        return true;
+    }
+    // Helpers
+    private getWeekdayName(n: number): string {
+        let weekdayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        return this.getNth(n, weekdayNames);
+    };
+    private getWeekdayAbbr(n: number): string {
+        return this.getWeekdayName(n).substring(0, 3);
+    }
+    private getMonthName(n: number): string {
+        let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        return this.getNth(n, monthNames, 'Undefined');
+    };
+    private getMonthAbbr(n: number): string {
+        return this.getMonthName(n).substring(0, 3);
+    }
+    private getOrdinalSuffix(n: number): string {
+        if (n > 3 && n < 21) return 'th';
+        return this.getNth(n % 10, ['st', 'nd', 'rd'], 'th');
+    };
+    private getOrdinalWord(n: number): string {
+        return this.getNth(n, ['First', 'Second', 'Third', 'Fourth', 'Fifth']);
+    };
+    private getNth(n: number, list: string[], defaultValue = 'Undefined'): string {
+        return (n > 0 && n < list.length + 1) ? list[n - 1] : defaultValue;
+    }
 }
 
 export function from(w: any, x?: number, y?: number, z?: number): HumanDate {

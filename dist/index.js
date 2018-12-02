@@ -139,16 +139,9 @@ var HumanDate = /** @class */ (function () {
         return formatted;
     };
     ;
-    // 
-    HumanDate.prototype.gregYearLength = function (gregYear) {
-        var length = 365;
-        if (this.mod(gregYear, 4) == 0 && this.mod(gregYear, 100) != 0) {
-            length++;
-        }
-        else if (this.mod(gregYear, 400) == 0) {
-            length++;
-        }
-        return length;
+    // Find the length of a given Gregorian year in days.
+    HumanDate.prototype.gregYearLength = function (y) {
+        return (((y % 4) == 0 && (y % 100) != 0) || (y % 400) == 0) ? 366 : 365;
     };
     ;
     //
