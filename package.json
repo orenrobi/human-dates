@@ -1,0 +1,31 @@
+{
+  "name": "human-date",
+  "version": "1.0.0",
+  "description": "A calendar that uses months, weeks, and weekdays (no day numbers).",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orenrobi/human-date.git"
+  },
+  "keywords": [
+    "date"
+  ],
+  "author": "Oren Robinson <oren@includepeople.com> (https://github.com/orenrobi)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/orenrobi/human-date/issues"
+  },
+  "homepage": "https://github.com/orenrobi/human-date#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "isostring": "0.0.1"
+  }
+}
