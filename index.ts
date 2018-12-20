@@ -228,7 +228,7 @@ class HumanDate {
         //let daysInPriorWeeks = 7 * (max(min(week, (this.mod(month, 3) == 2 || (month == 12 && this.isLeapYear(year))) ? 5 : 4), 1) - 1);
         this.fromHumanDay(year, daysInPriorMonths + daysInPriorWeeks + day);
     }
-
+    // For testing. Verify that conversions back and forth all work.
     public verify(daysSinceEpoch: number): boolean {
         // 1. Calculate Human Date from Days Since Epoch
         // 2. Calculate Gregorian Date from Days Since Epoch

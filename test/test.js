@@ -1,14 +1,14 @@
 'use strict';
 var expect = require('chai').expect;
-var humandate = require('../dist/index.js');
-describe('human-date function test', () => {
+var humandates = require('../dist/index.js');
+describe('human-dates function test', () => {
     it('should be "2004 Dec 5 Mon"', () => {
         // Monday, Dec 27, 2004 is in a leap week.
-        var hd = humandate.from(new Date(2004,11,27));
+        var hd = humandates.from(new Date(2004,11,27));
         expect(hd.standard).to.equal('2004 Dec 5 Mon');
     });
     it('should be 2004-12-27', () => {
-        var hd = humandate.from(2004,12,5,1);
+        var hd = humandates.from(2004,12,5,1);
         expect(hd.iso.substring(0,10)).to.equal('2004-12-27');
     });
     // Conversion of negative years to BCE:

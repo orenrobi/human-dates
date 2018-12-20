@@ -144,7 +144,7 @@ var HumanDate = /** @class */ (function () {
         return (((y % 4) == 0 && (y % 100) != 0) || (y % 400) == 0) ? 366 : 365;
     };
     ;
-    //
+    // Adjust the gregorian Year and DayOfYear values toward a resolved ordinal date.
     HumanDate.prototype.shiftGreg = function (isNegativeYear) {
         if (typeof this.gregorianYear !== "number" || typeof this.gregorianDayOfYear !== "number") {
             return;
@@ -157,7 +157,7 @@ var HumanDate = /** @class */ (function () {
         this.gregorianYear = this.gregorianYear + 1;
     };
     ;
-    //
+    // Returns whether the gregorian Year and DayOfYear are a resolved ordinal date.
     HumanDate.prototype.isResolvedGreg = function (isNegativeYear) {
         if (typeof this.gregorianDayOfYear !== "number" || typeof this.gregorianYear !== "number") {
             return true;
@@ -168,7 +168,7 @@ var HumanDate = /** @class */ (function () {
         return this.gregorianDayOfYear < this.gregYearLength(this.gregorianYear);
     };
     ;
-    //
+    // Calculates a Human Date based on a Human Year and DayOfYear.
     HumanDate.prototype.fromHumanDay = function (year, dayOfYear) {
         var newYearDay = this.getHumanNewYearDay(year);
         var daysSinceEpoch = newYearDay + dayOfYear - 1;
@@ -183,6 +183,7 @@ var HumanDate = /** @class */ (function () {
         this.fromDate(date);
     };
     ;
+    // Calculates a Human Date.
     HumanDate.prototype.fromHumanDate = function (year, month, week, day) {
         var daysInPriorMonths = 0;
         for (var i = 1; i < month; i++) {
@@ -195,6 +196,21 @@ var HumanDate = /** @class */ (function () {
         //let daysInPriorWeeks = 7 * (max(min(week, (this.mod(month, 3) == 2 || (month == 12 && this.isLeapYear(year))) ? 5 : 4), 1) - 1);
         this.fromHumanDay(year, daysInPriorMonths + daysInPriorWeeks + day);
     };
+    // For testing. Verify that conversions back and forth all work.
+    HumanDate.prototype.verify = function (daysSinceEpoch) {
+        // 1. Calculate Human Date from Days Since Epoch
+        // 2. Calculate Gregorian Date from Days Since Epoch
+        // 3. Calculate Days Since Epoch from Human Date
+        // 4. Verify Days Since Epoch equals original value
+        // 5. Calculate Days Since Epoch from Gregorian Date
+        // 6. Verify Days Since Epoch equals original value
+        // 7. Calculate Human Date from Gregorian Date
+        // 8. Verify Human Date equals first value
+        // 9. Calculate Gregorian Date from Human Date
+        // 10. Verify Gregorian Date equals first value
+        return true;
+    };
+    // Helpers
     HumanDate.prototype.getWeekdayName = function (n) {
         var weekdayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         return this.getNth(n, weekdayNames);
@@ -224,19 +240,6 @@ var HumanDate = /** @class */ (function () {
     HumanDate.prototype.getNth = function (n, list, defaultValue) {
         if (defaultValue === void 0) { defaultValue = 'Undefined'; }
         return (n > 0 && n < list.length + 1) ? list[n - 1] : defaultValue;
-    };
-    HumanDate.prototype.verify = function (daysSinceEpoch) {
-        // 1. Calculate Human Date from Days Since Epoch
-        // 2. Calculate Gregorian Date from Days Since Epoch
-        // 3. Calculate Days Since Epoch from Human Date
-        // 4. Verify Days Since Epoch equals original value
-        // 5. Calculate Days Since Epoch from Gregorian Date
-        // 6. Verify Days Since Epoch equals original value
-        // 7. Calculate Human Date from Gregorian Date
-        // 8. Verify Human Date equals first value
-        // 9. Calculate Gregorian Date from Human Date
-        // 10. Verify Gregorian Date equals first value
-        return true;
     };
     // Derivation: 1000 * 60 * 60 * 24
     HumanDate.DAY_MILLISECONDS = 86400000;

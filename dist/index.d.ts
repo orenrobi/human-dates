@@ -62,6 +62,7 @@ declare class HumanDate {
     private isResolvedGreg;
     fromHumanDay(year: number, dayOfYear: number): void;
     fromHumanDate(year: number, month: number, week: number, day: number): void;
+    verify(daysSinceEpoch: number): boolean;
     private getWeekdayName;
     private getWeekdayAbbr;
     private getMonthName;
@@ -69,7 +70,6 @@ declare class HumanDate {
     private getOrdinalSuffix;
     private getOrdinalWord;
     private getNth;
-    verify(daysSinceEpoch: number): boolean;
 }
 export declare function from(w: any, x?: number, y?: number, z?: number): HumanDate;
 export {};
